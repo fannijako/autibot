@@ -23,7 +23,7 @@ async def on_message(message):
     if message.author == bot.user:
         return    
     
-    await message.channel.send(run_flow_from_json(flow="AskAI.json",
+    await message.channel.send(run_flow_from_json(flow=os.path.join(os.path.dirname(os.path.abspath(__file__)), "AskAI.json"),
                             input_value="message",
                             fallback_to_env_vars=True,
                             tweaks={

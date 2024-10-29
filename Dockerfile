@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 COPY .env ./app
+COPY ./app/AskAI.json ./app
 
 # Run the bot
 CMD ["python", "app/autibot.py"] 
