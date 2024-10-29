@@ -2,6 +2,8 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from langflow.load import run_flow_from_json
+
 
 # Load environment variables from .env file
 load_dotenv(os.path.dirname(os.path.abspath(__file__)) + '/.env')
@@ -19,13 +21,17 @@ async def on_ready():
 async def on_message(message):
     # Prevent bot from responding to its own messages
     if message.author == bot.user:
-        return
-
-    # Send "Hello World" whenever a user sends a message
-    await message.channel.send('Hello World')
+        return    
+    
+    await message.channel.send(run_flow_from_json(flow="AskAI.json",
+                            input_value="message",
+                            fallback_to_env_vars=True,
+                            tweaks={
+                                "TextInput-NfsD4": {
+                                    "input_value": message.content
+                                }}))
     
     # Process commands if you want to add them later
     await bot.process_commands(message)
 
-# Replace 'YOUR_BOT_TOKEN' with your actual bot token
 bot.run(os.environ.get('DISCORD_TOKEN')) 
