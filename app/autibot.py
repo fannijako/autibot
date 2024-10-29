@@ -4,7 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(os.path.dirname(os.path.abspath(__file__)) + '/.env')
 
 # Create bot instance with command prefix '!'
 intents = discord.Intents.default()
