@@ -3,6 +3,8 @@ version: '3.8'
 services:
   autibot:
     build: .
+    volumes:
+      - ./models:/app/models
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
     restart: unless-stopped
