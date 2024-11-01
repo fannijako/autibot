@@ -2,34 +2,50 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from llama_cpp import Llama
-import psutil
+from langchain_huggingface import HuggingFaceEndpoint
+from transformers import AutoTokenizer
+from langchain_core.prompts import PromptTemplate
 
 
 load_dotenv(os.path.dirname(os.path.abspath(__file__)) + '/.env')
 
-physical_cores = psutil.cpu_count(logical=False)
-optimal_threads = max(1, physical_cores - 1)  # Use optimal thread count
+model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-llm = Llama(
-    model_path="./models/llama-2-7b-chat.Q2_K.gguf",
-    n_ctx=2048,  # Context window
-    n_threads=optimal_threads  # Use optimal thread count
+llm = HuggingFaceEndpoint(
+    repo_id=model_id,
+    huggingfacehub_api_token=os.environ['HUGGINGFACE_TOKEN'],
+    max_new_tokens=512,
+    stop_sequences=[tokenizer.eos_token],
+    streaming=True,
 )
+
+def format_prompt(prompt):
+    chat = [
+        {
+            "role": "system", 
+            "content": "You are a helpful AI assistant."},
+        {"role": "user", "content": prompt},
+    ]
+
+    formatted_prompt = tokenizer.apply_chat_template(
+        chat, 
+        tokenize=False, 
+        add_generation_prompt=True
+    )
+
+    return formatted_prompt
+
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 async def get_llama_response(prompt):
-    response = llm.create_completion(
-        prompt,
-        max_tokens=512,
-        temperature=0.7,
-        stop=["User:", "\n"],
-        echo=False
+    response = llm.invoke(
+        format_prompt(prompt)
     )
-    return response['choices'][0]['text'].strip()
+    return response
 
 @bot.event
 async def on_ready():
