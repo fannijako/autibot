@@ -24,7 +24,7 @@ def format_prompt(prompt):
     chat = [
         {
             "role": "system", 
-            "content": "You are a helpful AI assistant."},
+            "content": "Egy segítőkész AI asszisztens vagy."},
         {"role": "user", "content": prompt},
     ]
 
