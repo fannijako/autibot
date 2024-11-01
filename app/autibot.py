@@ -9,7 +9,7 @@ from langchain_core.prompts import PromptTemplate
 
 load_dotenv(os.path.dirname(os.path.abspath(__file__)) + '/.env')
 
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+model_id = "HuggingFaceH4/zephyr-7b-beta"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 
 llm = HuggingFaceEndpoint(
