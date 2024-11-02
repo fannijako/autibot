@@ -5,7 +5,6 @@ Initialization, on_ready and on_message event handlers.
 
 import discord
 import logging
-import os
 
 from discord.ext import commands
 
@@ -37,11 +36,11 @@ def initiate_bot() -> None:
     intents.message_content = True
     bot = commands.Bot(command_prefix='!', intents=intents)
     logging.info('Bot initialized.')
-    bot.run(os.environ.get('DISCORD_TOKEN'))
+
+    return bot
 
 
-@bot.event
-async def on_ready() -> None:
+def bot_on_ready(bot) -> None:
     """
     Event handler for when the bot is ready (connected to Discord and ready to respond).
     Creates the Astra client, tokenizer and LLM client as global variables.
@@ -61,8 +60,7 @@ async def on_ready() -> None:
     LLM = create_llm_client(TOKENIZER)
 
 
-@bot.event
-async def on_message(message: discord.Message) -> None:
+async def bot_on_message(bot, message: discord.Message) -> None:
     """
     Event handler for when a message is sent in a channel.
     Processes the message and sends a response if the message is not from the bot itself.
