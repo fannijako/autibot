@@ -3,7 +3,7 @@ Module for running the bot. Entrypoint for the Docker container.
 Sets up logging and the bot.
 """
 
-from discord import initiate_bot
+from discord_bot import initiate_bot
 from utils import set_logging
 
 
