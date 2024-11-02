@@ -1,4 +1,4 @@
-# autibot
+# Autibot
 RAG based chatbot trained on autism specific documents
 
 ## How to run the project
