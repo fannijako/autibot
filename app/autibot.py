@@ -1,15 +1,26 @@
-import os
+"""
+Module for running the bot. Entrypoint for the Docker container.
+Sets up logging and the bot.
+"""
 
-from discord import create_bot
-from utils import load_env, set_logging
+from discord import initiate_bot
+from utils import set_logging
 
 
+def main() -> None:
+    """
+    Main function to run the bot.
+    Entrypoint for the Docker container.
+    Initializes logging and the bot.
 
-def main():
-    load_env()
+    Params:
+        None
+    Returns:
+        None
+    """
+
     set_logging()
-    bot = create_bot()
-    bot.run(os.environ.get('DISCORD_TOKEN'))
+    initiate_bot()
 
 
 if __name__ == "__main__":
