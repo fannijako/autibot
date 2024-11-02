@@ -4,4 +4,6 @@ services:
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - HUGGINGFACE_TOKEN=${HUGGINGFACE_TOKEN}
+      - ASTRA_DB_TOKEN=${ASTRA_DB_TOKEN}
+      - ASTRA_DB_API_ENDPOINT=${ASTRA_DB_API_ENDPOINT}
     restart: unless-stopped
