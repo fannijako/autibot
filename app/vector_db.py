@@ -1,5 +1,7 @@
-from astrapy import DataAPIClient
 import os
+
+from astrapy import DataAPIClient
+
 from utils import load_env
 
 
