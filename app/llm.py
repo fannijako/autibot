@@ -99,7 +99,7 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
     return formatted_prompt
 
 
-def get_llama_response(astra_client: DataAPIClient, llm: HuggingFaceEndpoint, tokenizer: AutoTokenizer, prompt: str) -> str:
+async def get_llama_response(astra_client: DataAPIClient, llm: HuggingFaceEndpoint, tokenizer: AutoTokenizer, prompt: str) -> str:
     """
     Gets the response from the LLM.
 
