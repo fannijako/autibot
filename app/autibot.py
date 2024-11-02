@@ -1,14 +1,13 @@
 import os
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEndpoint
 from transformers import AutoTokenizer
 from langchain_core.prompts import PromptTemplate
+from utils import load_env
 
 
-load_dotenv(os.path.dirname(os.path.abspath(__file__)) + '/.env')
-
+load_env()
 model_id = "HuggingFaceH4/zephyr-7b-beta"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 
