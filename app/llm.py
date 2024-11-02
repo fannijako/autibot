@@ -43,11 +43,6 @@ def create_llm_client(max_new_tokens: int = 512, streaming: bool = True) -> Hugg
     llm = HuggingFaceEndpoint(
             repo_id=MODEL_ID,
             huggingfacehub_api_token=os.environ.get('HUGGINGFACE_TOKEN'),
-            top_k=10,
-            top_p=0.95,
-            typical_p=0.95,
-            temperature=0.01,
-            repetition_penalty=1.03,
             max_new_tokens=max_new_tokens,
             streaming=streaming,
         )
