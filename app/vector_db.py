@@ -2,11 +2,43 @@ from astrapy import DataAPIClient
 import os
 from utils import load_env
 
-load_env()
 
-client = DataAPIClient(os.environ.get('ASTRA_DB_TOKEN'))
-db = client.get_database_by_api_endpoint(
-    os.environ.get('ASTRA_DB_API_ENDPOINT')
+TEST_QUERY = "Családi pótlék"
+
+
+def create_astra_client():
+    return DataAPIClient(os.environ.get('ASTRA_DB_TOKEN'))
+
+
+def get_database(client):
+    return client.get_database_by_api_endpoint(
+        os.environ.get('ASTRA_DB_API_ENDPOINT')
+        )
+
+
+def similarity_search(client, query, collection_name = "documents", limit = 10):
+    db = get_database(client)
+    collection = db.get_collection(collection_name)
+    results = collection.find(
+        sort={"$vectorize": query},
+        limit=limit,
+        projection={"$vectorize": True},
+        include_similarity=True,
     )
+    return [{"$similarity": result["$similarity"], "$vectorize": result["$vectorize"]} for result in results]
 
-print(f"Connected to Astra DB: {db.list_collection_names()}")
+
+def filter_on_similarity(results, threshold = 0.6):
+    return [result for result in results if result['$similarity'] >= threshold]
+
+
+def get_information_to_query(client, query, collection_name="documents", limit=10, threshold=0.6):
+    return filter_on_similarity(similarity_search(client, query, collection_name=collection_name, limit=limit), threshold=threshold)
+
+
+if __name__ == "__main__":
+    load_env()
+    client = create_astra_client()
+    for result in get_information_to_query(client, TEST_QUERY):
+        print(result)
+        print("-"*100)

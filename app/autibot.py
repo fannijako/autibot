@@ -1,10 +1,12 @@
 import os
+
 import discord
 from discord.ext import commands
 from langchain_huggingface import HuggingFaceEndpoint
 from transformers import AutoTokenizer
-from langchain_core.prompts import PromptTemplate
+
 from utils import load_env
+from vector_db import create_astra_client, get_information_to_query
 
 
 load_env()
@@ -19,12 +21,31 @@ llm = HuggingFaceEndpoint(
     streaming=True,
 )
 
+astra_client = create_astra_client()
+
 def format_prompt(prompt):
+    info = get_information_to_query(prompt, astra_client)
+
     chat = [
         {
             "role": "system", 
-            "content": "Egy segítőkész AI asszisztens vagy."},
-        {"role": "user", "content": prompt},
+            "content":  """
+                        Egy segítőkész AI asszisztens vagy, aki autizmussal élő személyeknek 
+                        vagy a hozzátartozóiknak információval szolgál az általad elérhető 
+                        adatbázisok alapján.
+                        """
+        },
+        {"role": "user", 
+            "content": f"""
+                        Az alábbi információkat kaptad a megosztott hivatalos dokumentumokból: {info}: 
+                        
+                        Ezek alapján válaszolj a következő kérdésre: {prompt}
+                        
+                        Ne adj hozzá semmit a válaszodhoz, csak a kérdésedre adott választ!
+                        
+                        Válaszod:
+                        """
+        }
     ]
 
     formatted_prompt = tokenizer.apply_chat_template(
