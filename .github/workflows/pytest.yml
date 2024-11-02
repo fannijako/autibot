@@ -31,4 +31,4 @@ jobs:
       env:
         ASTRA_DB_TOKEN: ${{ secrets.ASTRA_DB_TOKEN }}
       run: |
-        pytest app/test_vector_db.py -v 
+        pytest tests/test_vector_db.py -v 
