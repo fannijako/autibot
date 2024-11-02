@@ -6,8 +6,9 @@ Loading environment variables and setting up logging.
 import os
 import logging
 
-from dotenv import load_dotenv
 from logging.handlers import TimedRotatingFileHandler
+
+from dotenv import load_dotenv
 
 
 MODEL_ID = "HuggingFaceH4/zephyr-7b-beta"
@@ -50,7 +51,8 @@ def set_logging() -> None:
     )
 
     file_handler.setFormatter(logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        '{asctime} - {name} - {levelname} - {message}',
+        style='{'
     ))
 
     logging.getLogger().setLevel(logging.INFO)

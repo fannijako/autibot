@@ -1,6 +1,6 @@
 """
 Module for interacting with the LLM.
-Client creation, prompt formatting and response generation based on 
+Client creation, prompt formatting and response generation based on
 the Astra Vector Database similarity search results.
 """
 
@@ -25,7 +25,7 @@ def create_tokenizer() -> AutoTokenizer:
         AutoTokenizer: The tokenizer.
     """
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-    logging.info(f'Tokenizer created.')
+    logging.info('Tokenizer created.')
     return tokenizer
 
 
@@ -46,7 +46,7 @@ def create_llm_client(max_new_tokens: int = 512, streaming: bool = True) -> Hugg
             max_new_tokens=max_new_tokens,
             streaming=streaming,
         )
-    logging.info(f'LLM client created.')
+    logging.info('LLM client created.')
 
     return llm
 
@@ -66,38 +66,40 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
 
     chat = [
         {
-            "role": "system", 
+            "role": "system",
             "content":  """
-                        Egy segítőkész AI asszisztens vagy, aki autizmussal élő személyeknek 
-                        vagy a hozzátartozóiknak információval szolgál az általad elérhető 
+                        Egy segítőkész AI asszisztens vagy, aki autizmussal élő személyeknek
+                        vagy a hozzátartozóiknak információval szolgál az általad elérhető
                         adatbázisok alapján.
                         """
         },
-        {"role": "user", 
+        {"role": "user",
             "content": f"""
-                        Az alábbi információkat kaptad a megosztott hivatalos dokumentumokból: {info}: 
-                        
+                        Az alábbi információkat kaptad a megosztott
+                        hivatalos dokumentumokból: {info}:
+
                         Ezek alapján válaszolj a következő kérdésre: {prompt}
-                        
+
                         Ne adj hozzá semmit a válaszodhoz, csak a kérdésedre adott választ!
-                        
+
                         Válaszod:
-                        """
-        }
+                        """},
     ]
 
     formatted_prompt = tokenizer.apply_chat_template(
-        chat, 
-        tokenize=False, 
+        chat,
+        tokenize=False,
         add_generation_prompt=True
     )
-    
+
     logging.info(f'Prompt formatted: {formatted_prompt}.')
 
     return formatted_prompt
 
 
-async def get_llama_response(astra_client: DataAPIClient, llm: HuggingFaceEndpoint, tokenizer: AutoTokenizer, prompt: str) -> str:
+async def get_llama_response(astra_client: DataAPIClient,
+                             llm: HuggingFaceEndpoint,
+                             tokenizer: AutoTokenizer, prompt: str) -> str:
     """
     Gets the response from the LLM.
 

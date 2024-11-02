@@ -4,9 +4,9 @@ Sets up logging and the bot.
 """
 
 import os
-import discord
 import logging
 
+import discord
 from discord.ext import commands
 
 from app.llm import (
@@ -57,7 +57,7 @@ async def on_message(message: discord.Message) -> None:
     Event handler for when a message is sent in a channel.
     Processes the message and sends a response if the message is not from the bot itself.
 
-    Calls the Vector DB to provide context, 
+    Calls the Vector DB to provide context,
     generates the prompt, formats it
     and sends it to the LLM to generate a response to the message.
 
@@ -80,8 +80,8 @@ async def on_message(message: discord.Message) -> None:
 
     except Exception as e:
         logging.error(f'Error processing message: {str(e)}')
-        await message.channel.send(f"""Elnézést, hibába ütköztem. Próbáld újra később.
-                                   Ha akkor is fennáll a hiba, akkor írj a 
+        await message.channel.send("""Elnézést, hibába ütköztem. Próbáld újra később.
+                                   Ha akkor is fennáll a hiba, akkor írj a
                                    fannijako@gmail.com email címre.""")
 
     await bot.process_commands(message)

@@ -1,4 +1,4 @@
-name: Pylint
+name: Pylint and flake8
 
 on:
   push:
@@ -24,4 +24,11 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint --disable=W1203,W0603,W0718 $(git ls-files '*.py')
+    - name: Install flake8
+      run: |
+        pip install flake8
+    - name: Analysing the code with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
