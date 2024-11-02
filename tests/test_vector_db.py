@@ -7,7 +7,7 @@ from app.vector_db import (
     similarity_search,
     filter_on_similarity,
     get_information_to_query
-)
+)  
 
 
 def test_filter_on_similarity():
