@@ -16,6 +16,19 @@ RAG based chatbot trained on autism specific documents
 11. Compose the docker container
 12. Start chatting :)
 
+```.env
+DISCORD_TOKEN="<your-discord-app-token>"
+HUGGINGFACE_TOKEN="<your-huggingface-token>"
+ASTRA_DB_TOKEN="<your-astra-db-token>"
+ASTRA_DB_API_ENDPOINT="https://<your-namespace>.apps.astra.datastax.com"
+```
+
+```bash
+git clone https://github.com/fannijako/autibot.git
+cd autibot
+docker compose up --build
+```
+
 ## Components
 
 - **Discord App**: The app that allows the user to chat with the bot
