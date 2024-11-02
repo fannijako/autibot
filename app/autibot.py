@@ -24,7 +24,7 @@ llm = HuggingFaceEndpoint(
 astra_client = create_astra_client()
 
 def format_prompt(prompt):
-    info = get_information_to_query(prompt, astra_client)
+    info = get_information_to_query(astra_client, prompt)
 
     chat = [
         {
