@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock, patch
 
-from app.vector_db import (
+from ..app.vector_db import (
     create_astra_client,
     get_database,
     similarity_search,
