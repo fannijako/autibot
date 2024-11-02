@@ -29,8 +29,6 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.info('Bot initialized.')
 
-bot.run(os.environ.get('DISCORD_TOKEN'))
-
 
 @bot.event        
 async def bot_on_ready() -> None:
@@ -86,3 +84,5 @@ async def bot_on_message(message: discord.Message) -> None:
                                    Ha akkor is fennáll a hiba, akkor írj fannijako@gmail.com email címre.""")
 
     await bot.process_commands(message)
+
+bot.run(os.environ.get('DISCORD_TOKEN'))
