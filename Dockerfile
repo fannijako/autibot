@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "app/autibot.py"] 
+CMD ["python", "autibot.py"] 

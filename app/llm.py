@@ -11,8 +11,8 @@ from astrapy import DataAPIClient
 from langchain_huggingface import HuggingFaceEndpoint
 from transformers import AutoTokenizer
 
-from utils import MODEL_ID
-from vector_db import get_information_to_query
+from app.utils import MODEL_ID
+from app.vector_db import get_information_to_query
 
 
 def create_tokenizer() -> AutoTokenizer:

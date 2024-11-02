@@ -9,13 +9,13 @@ import logging
 
 from discord.ext import commands
 
-from llm import (
+from app.llm import (
     get_llama_response,
     create_tokenizer,
     create_llm_client
     )
-from utils import set_logging, load_env
-from vector_db import create_astra_client
+from app.utils import set_logging, load_env
+from app.vector_db import create_astra_client
 
 
 ASTRA_CLIENT = None
@@ -30,7 +30,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 logging.info('Bot initialized.')
 
 
-@bot.event        
+@bot.event
 async def on_ready() -> None:
     """
     Event handler for when the bot is ready (connected to Discord and ready to respond).
@@ -81,7 +81,8 @@ async def on_message(message: discord.Message) -> None:
     except Exception as e:
         logging.error(f'Error processing message: {str(e)}')
         await message.channel.send(f"""Elnézést, hibába ütköztem. Próbáld újra később.
-                                   Ha akkor is fennáll a hiba, akkor írj fannijako@gmail.com email címre.""")
+                                   Ha akkor is fennáll a hiba, akkor írj a 
+                                   fannijako@gmail.com email címre.""")
 
     await bot.process_commands(message)
 
