@@ -48,7 +48,7 @@ async def on_ready() -> None:
 
     ASTRA_CLIENT = create_astra_client()
     TOKENIZER = create_tokenizer()
-    LLM = create_llm_client(TOKENIZER)
+    LLM = create_llm_client()
 
 
 @bot.event

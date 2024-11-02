@@ -29,12 +29,11 @@ def create_tokenizer() -> AutoTokenizer:
     return tokenizer
 
 
-def create_llm_client(tokenizer: AutoTokenizer, max_new_tokens: int = 512, streaming: bool = True) -> HuggingFaceEndpoint:
+def create_llm_client(max_new_tokens: int = 512, streaming: bool = True) -> HuggingFaceEndpoint:
     """
     Creates an LLM client.
 
     Params:
-        tokenizer (AutoTokenizer): The tokenizer.
         max_new_tokens (int): The maximum number of new tokens to generate.
         streaming (bool): Whether to stream the response.
 
@@ -44,8 +43,12 @@ def create_llm_client(tokenizer: AutoTokenizer, max_new_tokens: int = 512, strea
     llm = HuggingFaceEndpoint(
             repo_id=MODEL_ID,
             huggingfacehub_api_token=os.environ.get('HUGGINGFACE_TOKEN'),
+            top_k=10,
+            top_p=0.95,
+            typical_p=0.95,
+            temperature=0.01,
+            repetition_penalty=1.03,
             max_new_tokens=max_new_tokens,
-            stop_sequences=[tokenizer.eos_token],
             streaming=streaming,
         )
     logging.info(f'LLM client created.')

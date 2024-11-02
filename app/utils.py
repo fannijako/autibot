@@ -45,7 +45,8 @@ def set_logging() -> None:
         filename='logs/autibot.log',
         when='H',
         interval=1,
-        backupCount=24
+        backupCount=24,
+        encoding='utf-8'
     )
 
     file_handler.setFormatter(logging.Formatter(
