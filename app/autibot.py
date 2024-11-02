@@ -31,7 +31,7 @@ logging.info('Bot initialized.')
 
 
 @bot.event        
-async def bot_on_ready() -> None:
+async def on_ready() -> None:
     """
     Event handler for when the bot is ready (connected to Discord and ready to respond).
     Creates the Astra client, tokenizer and LLM client as global variables.
@@ -52,7 +52,7 @@ async def bot_on_ready() -> None:
 
 
 @bot.event
-async def bot_on_message(message: discord.Message) -> None:
+async def on_message(message: discord.Message) -> None:
     """
     Event handler for when a message is sent in a channel.
     Processes the message and sends a response if the message is not from the bot itself.
