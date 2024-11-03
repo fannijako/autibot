@@ -50,7 +50,7 @@ class ChatBot:
                  history_expiry: timedelta = timedelta(hours=1),
                  error_message: str = """Elnézést, hibába ütköztem. Próbáld újra később.
                                         Ha akkor is fennáll a hiba, akkor írj a
-                                        fannijako@gmail.com email címre."""):
+                                        fanni.jako@mensa.hu email címre."""):
         load_env()
         set_logging()
 

@@ -57,7 +57,7 @@ async def on_message(message: discord.Message) -> None:
     if not message.content.startswith('!'):
         try:
             async with message.channel.typing():
-                response = await chatbot.process_rag_query(message.author, message.content)
+                response = await chatbot.process_rag_query(message.author.id, message.content)
             await message.channel.send(response)
 
         except Exception as e:
