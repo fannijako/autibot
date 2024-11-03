@@ -11,8 +11,7 @@ from datetime import datetime, timedelta
 from app.llm import (
     get_llama_response,
     create_tokenizer,
-    create_llm_client,
-    format_prompt
+    create_llm_client
     )
 
 from app.utils import (
@@ -20,7 +19,7 @@ from app.utils import (
     load_env
     )
 
-from app.vector_db import create_astra_client, get_information_to_query
+from app.vector_db import create_astra_client
 
 
 class ChatBot:
