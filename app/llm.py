@@ -78,14 +78,14 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str, chat_history
             "content": f"""
                         Az alábbi információkat kaptad a megosztott
                         hivatalos dokumentumokból: {info}:
-                        
+
                         Korábbi beszélgetések: {chat_history}
 
                         Ezek alapján válaszolj a következő kérdésre: {prompt}
 
                         Ne adj hozzá semmit a válaszodhoz, csak a kérdésedre adott választ!
 
-                        Magyarul válaszolj és adj kerek mondatokat! 
+                        Magyarul válaszolj és adj kerek mondatokat!
                         Ha egy mondatot nem tudsz befejezni, ne kezdj bele.
 
                         Amennyiben releváns, megadhatod a pontos referenciát
@@ -109,7 +109,8 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str, chat_history
 async def get_llama_response(astra_client: DataAPIClient,
                              llm: HuggingFaceEndpoint,
                              tokenizer: AutoTokenizer,
-                             prompt: str) -> str:
+                             prompt: str,
+                             conversation_history: str) -> str:
     """
     Gets the response from the LLM.
 
@@ -118,16 +119,18 @@ async def get_llama_response(astra_client: DataAPIClient,
         llm (HuggingFaceEndpoint): The LLM client.
         tokenizer (AutoTokenizer): The tokenizer.
         prompt (str): The prompt.
-
+        conversation_history (str): The conversation history.
     Returns:
         str: The response from the LLM.
     """
 
-    info = get_information_to_query(astra_client, prompt)
-    logging.info(f'Information to query: {info}.')
+    information = get_information_to_query(astra_client, prompt)
+    logging.info(f'Information to query: {information}.')
+
+    context = "\n".join([info.get("$vectorize") for info in information])
 
     response = llm.invoke(
-        format_prompt(info, tokenizer, prompt)
+        format_prompt(context, tokenizer, prompt, conversation_history)
     )
 
     logging.info(f'Response: {response}.')

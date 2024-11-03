@@ -24,6 +24,28 @@ from app.vector_db import create_astra_client, get_information_to_query
 
 
 class ChatBot:
+    """
+    Class for the chatbot. Defines the chat history and the RAG approach.
+
+    Params:
+        max_history_length (int): The maximum length of the chat history.
+        history_expiry (timedelta): The expiry time for the chat history.
+        error_message (str): The error message to send to the user.
+
+    Attributes:
+        astra_client (DataAPIClient): The Astra client.
+        llm (HuggingFaceEndpoint): The LLM client.
+        tokenizer (AutoTokenizer): The tokenizer.
+        chat_histories (defaultdict): The chat histories.
+
+    Methods:
+        add_to_history: Add a message to the user's chat history.
+        _clean_old_history: Remove expired messages from history.
+        clear_history: Clear the conversation history for the given user.
+        get_conversation_history: Give the conversation history for the given user.
+        process_rag_query: Process a query using RAG approach with conversation history.
+    """
+
     def __init__(self,
                  max_history_length: int = 10,
                  history_expiry: timedelta = timedelta(hours=1),
@@ -68,7 +90,8 @@ class ChatBot:
 
         if len(self.chat_histories[user_id]) > self.max_history_length:
             self.chat_histories[user_id].pop(0)
-            logging.info(f'Popped oldest message from history for user {user_id} due to reaching max length limit.')
+            logging.info(f'Popped oldest message from history for user {user_id} '
+                         'due to reaching max length limit.')
 
     def _clean_old_history(self, user_id: int) -> None:
         """
@@ -90,7 +113,7 @@ class ChatBot:
             for timestamp, role, message in self.chat_histories[user_id]
             if current_time - timestamp < self.history_expiry
         ]
-    
+
     def clear_history(self, user_id: int) -> None:
         """
         Clear the conversation history for the given user
@@ -139,14 +162,12 @@ class ChatBot:
             str: The response from the LLM.
         """
 
-        information = get_information_to_query(self.astra_client, query)
-        context = "\n".join([info.get("$vectorize") for info in information])
-        
-        conversation_history = self.get_conversation_history(user_id)
-        
-        prompt = format_prompt(context, self.tokenizer, query, conversation_history)
+        response = await get_llama_response(self.astra_client,
+                                            self.llm,
+                                            self.tokenizer,
+                                            query,
+                                            self.get_conversation_history(user_id))
 
-        response = await get_llama_response(self.astra_client, self.llm, self.tokenizer, prompt)
         logging.info(f'Generated response: {response}')
 
         self.add_to_history(user_id, "Felhasználó", query)
