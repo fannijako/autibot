@@ -5,11 +5,10 @@
 ### New Features
 
 #### Conversation Management
-- **Chat History**: Implemented per-user conversation tracking
-  - Automatic message timestamping
-  - Intelligent history cleanup
-  - Configurable message limits
-  - Memory-efficient storage
+- **Chat History**: Implemented per-user conversation tracking (short-term)
+  - Short term history management for conversation-like interactions
+  - Ability to clear or show the history
+  - History is used in the RAG approach
 
 #### New Commands
 - `!clear_history`: Erases your current conversation history
