@@ -1,7 +1,7 @@
 """
 Module for interacting with the LLM.
 Client creation, prompt formatting and response generation based on
-the Astra Vector Database similarity search results.
+the Astra Vector Database similarity search results and the chat history.
 """
 
 import os
@@ -51,7 +51,7 @@ def create_llm_client(max_new_tokens: int = 512, streaming: bool = True) -> Hugg
     return llm
 
 
-def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
+def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str, chat_history: str = "") -> str:
     """
     Formats the prompt for the LLM.
 
@@ -59,6 +59,7 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
         info (str): The information to query.
         tokenizer (AutoTokenizer): The tokenizer.
         prompt (str): The prompt.
+        chat_history (str): The chat history.
 
     Returns:
         str: The formatted prompt.
@@ -77,10 +78,18 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
             "content": f"""
                         Az alábbi információkat kaptad a megosztott
                         hivatalos dokumentumokból: {info}:
+                        
+                        Korábbi beszélgetések: {chat_history}
 
                         Ezek alapján válaszolj a következő kérdésre: {prompt}
 
                         Ne adj hozzá semmit a válaszodhoz, csak a kérdésedre adott választ!
+
+                        Magyarul válaszolj és adj kerek mondatokat! 
+                        Ha egy mondatot nem tudsz befejezni, ne kezdj bele.
+
+                        Amennyiben releváns, megadhatod a pontos referenciát
+                        a megosztott hivatalos dokumentumokból.
 
                         Válaszod:
                         """},
@@ -99,7 +108,8 @@ def format_prompt(info: str, tokenizer: AutoTokenizer, prompt: str) -> str:
 
 async def get_llama_response(astra_client: DataAPIClient,
                              llm: HuggingFaceEndpoint,
-                             tokenizer: AutoTokenizer, prompt: str) -> str:
+                             tokenizer: AutoTokenizer,
+                             prompt: str) -> str:
     """
     Gets the response from the LLM.
 

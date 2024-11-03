@@ -1,6 +1,5 @@
 """
 Module for running the bot. Entrypoint for the Docker container.
-Sets up logging and the bot.
 """
 
 import os
@@ -9,32 +8,21 @@ import logging
 import discord
 from discord.ext import commands
 
-from app.llm import (
-    get_llama_response,
-    create_tokenizer,
-    create_llm_client
-    )
-from app.utils import set_logging, load_env
-from app.vector_db import create_astra_client
+from app.chatbot import ChatBot
 
 
-ASTRA_CLIENT = None
-TOKENIZER = None
-LLM = None
-
-load_env()
-set_logging()
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 logging.info('Bot initialized.')
+
+chatbot = ChatBot()
 
 
 @bot.event
 async def on_ready() -> None:
     """
     Event handler for when the bot is ready (connected to Discord and ready to respond).
-    Creates the Astra client, tokenizer and LLM client as global variables.
 
     Params:
         None
@@ -44,17 +32,11 @@ async def on_ready() -> None:
 
     logging.info(f'{bot.user} has connected to Discord!')
 
-    global ASTRA_CLIENT, TOKENIZER, LLM
-
-    ASTRA_CLIENT = create_astra_client()
-    TOKENIZER = create_tokenizer()
-    LLM = create_llm_client()
-
 
 @bot.event
 async def on_message(message: discord.Message) -> None:
     """
-    Event handler for when a message is sent in a channel.
+    Event handler for when a message is sent in a channel without the ! prefix.
     Processes the message and sends a response if the message is not from the bot itself.
 
     Calls the Vector DB to provide context,
@@ -72,18 +54,56 @@ async def on_message(message: discord.Message) -> None:
 
     logging.info(f'Received message: {message.content}')
 
-    try:
-        async with message.channel.typing():
-            response = await get_llama_response(ASTRA_CLIENT, LLM, TOKENIZER, message.content)
-            logging.info(f'Generated response: {response}')
+    if not message.content.startswith('!'):
+        try:
+            async with message.channel.typing():
+                response = await chatbot.process_rag_query(message.author, message.content)
             await message.channel.send(response)
 
-    except Exception as e:
-        logging.error(f'Error processing message: {str(e)}')
-        await message.channel.send("""Elnézést, hibába ütköztem. Próbáld újra később.
-                                   Ha akkor is fennáll a hiba, akkor írj a
-                                   fannijako@gmail.com email címre.""")
+        except Exception as e:
+            logging.error(f'Error processing message: {str(e)}')
+
+            await message.channel.send(chatbot.error_message)
 
     await bot.process_commands(message)
+
+
+@bot.command()
+async def clear_history(ctx: commands.Context) -> None:
+    """
+    Clear the conversation history for the user
+
+    Params:
+        ctx (commands.Context): The context of the command.
+    Returns:
+        None
+    """
+
+    logging.info(f'Clearing history for user {ctx.author.id}')
+
+    chatbot.clear_history(ctx.author.id)
+    await ctx.send("A beszélgetési előzményeid sikeresen törlésre kerültek!")
+
+
+@bot.command()
+async def show_history(ctx: commands.Context) -> None:
+    """
+    Show the current conversation history
+
+    Params:
+        ctx (commands.Context): The context of the command.
+    Returns:
+        None
+    """
+
+    logging.info(f'Showing history for user {ctx.author.id}')
+
+    history = chatbot.get_conversation_history(ctx.author.id)
+
+    if history:
+        await ctx.send(f"A beszélgetési előzményeid:\n```\n{history}\n```")
+    else:
+        await ctx.send("Nincs aktív beszélgetésed elmentve. Indíts új beszélgetést!")
+
 
 bot.run(os.environ.get('DISCORD_TOKEN'))
