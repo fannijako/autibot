@@ -18,6 +18,9 @@ langchain-huggingface = "^1.2.2"
 astrapy = "^1.5.2"
 # Transitive security floor — resolves GHSA-887c-mr87-cxwp (medium).
 torch = ">=2.8.0"
+# Used directly in app/llm.py (AutoTokenizer). Was previously transitive via
+# langchain-huggingface 0.1.2; on 1.2.2 it only ships under the [full] extra.
+transformers = "^5.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.0.0"
