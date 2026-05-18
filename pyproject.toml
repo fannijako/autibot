@@ -16,6 +16,21 @@ astrapy = "^1.5.2"
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.0.0"
 flake8 = "^7.0.0"
+pytest = "^8.0.0"
+pytest-asyncio = "^0.23.0"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.pylint."messages control"]
+# C0114 missing-module-docstring, C0116 missing-function-docstring: tests and
+#       small helpers don't need them.
+# W1203 logging-fstring-interpolation: project uses f-strings in logging.
+# W0603 global-statement, W0718 broad-exception-caught: deliberate in bot
+#       error-handling and singletons.
+# E0401 import-error: third-party imports aren't installed in lint-only CI jobs.
+disable = ["C0114", "C0116", "W1203", "W0603", "W0718", "E0401"]
 
 [build-system]
 requires = ["poetry-core"]

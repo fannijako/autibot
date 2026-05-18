@@ -1,8 +1,7 @@
-.PHONY: help install lock update run lint pylint flake8 docker-build docker-up docker-down clean venv
+.PHONY: help install lock update run lint pylint flake8 test docker-build docker-up docker-down clean test
 
 help:
 	@echo "Available targets:"
-	@echo "  venv          Create a virtual environment"
 	@echo "  install       Install dependencies via Poetry (incl. dev)"
 	@echo "  lock          Refresh poetry.lock"
 	@echo "  update        Update dependencies within version constraints"
@@ -10,13 +9,11 @@ help:
 	@echo "  lint          Run pylint and flake8"
 	@echo "  pylint        Run pylint only"
 	@echo "  flake8        Run flake8 only"
+	@echo "  test          Run pytest"
 	@echo "  docker-build  Build the Docker image"
 	@echo "  docker-up     Start the bot with docker compose"
 	@echo "  docker-down   Stop docker compose services"
 	@echo "  clean         Remove caches and build artifacts"
-
-venv:
-	python -m venv .venv
 
 install:
 	poetry install --with dev
@@ -33,11 +30,14 @@ run:
 lint: pylint flake8
 
 pylint:
-	poetry run pylint --disable=W1203,W0603,W0718,E0401 $$(git ls-files '*.py')
+	poetry run pylint $$(git ls-files '*.py')
 
 flake8:
 	poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 	poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+test:
+	poetry run pytest
 
 docker-build:
 	docker compose build
