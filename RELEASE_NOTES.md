@@ -1,5 +1,54 @@
 # Chatbot Release Notes
 
+## v2.1.0 — Maintenance & developer experience
+
+No runtime behavior changes. This release overhauls the project's build,
+test, and documentation surface so future contributions land on a known
+baseline.
+
+### Tooling
+
+- **Poetry** replaces `requirements.txt`. Version constraints live in
+  `pyproject.toml`; `poetry.lock` (generated on first `poetry install`)
+  pins exact versions for reproducible builds and Docker images.
+- **Makefile** added with `install`, `lock`, `update`, `run`, `lint`,
+  `pylint`, `flake8`, `test`, `docker-build`, `docker-up`, `docker-down`,
+  and `clean` targets.
+- **Dockerfile** now installs deps via Poetry against `pyproject.toml`.
+- **`.flake8`** config excludes `.venv` and other vendored dirs from lint.
+- **pylint config** centralized in `pyproject.toml` (`[tool.pylint."messages control"]`).
+
+### Tests & CI
+
+- `tests/` directory added with pytest-based coverage:
+  - Retrieval unit tests (`tests/test_vector_db.py`)
+  - Prompt-formatting unit tests (`tests/test_llm.py`)
+  - ChatBot history + end-to-end mocked RAG flow (`tests/test_chatbot.py`)
+- `pytest` + `pytest-asyncio` added as dev dependencies.
+- New `Tests` GitHub Actions workflow runs the suite on push/PR against
+  Python 3.11 and 3.12.
+- `Pylint and flake8` workflow updated to use Poetry and the new Python
+  matrix.
+
+### Documentation
+
+- **README** gains a "RAG design" section documenting chunking
+  responsibility, Astra `$vectorize` embeddings, vector-store choice,
+  retrieval params (top-k=10, threshold=0.6), the Hungarian prompt
+  template, and layered hallucination mitigation.
+- **README** gains a "Why custom RAG instead of LangChain / LlamaIndex?"
+  section.
+- **MAINTENANCE.md** tracks the remaining backlog (eval set, release tags,
+  data-source documentation, etc.).
+
+### Notes for operators
+
+- Local setup now requires Poetry (`pipx install poetry` recommended).
+- The Python floor moved to 3.11 (matches the Dockerfile); 3.9 and 3.10
+  are no longer covered in CI.
+
+---
+
 ## v2.0.0
 
 ### New Features
