@@ -1,5 +1,35 @@
 # Chatbot Release Notes
 
+## v2.1.1 — Security patch
+
+No runtime behavior changes. Resolves open Dependabot alerts and an
+implicit-dependency gap surfaced by the upgrade.
+
+### Security fixes
+
+- **pytest** `^8.0.0` → `^9.0.3` — GHSA-6w46-j5rx-g56g (medium, tmpdir
+  handling).
+- **pytest-asyncio** `^0.23.0` → `^1.3.0` — required for pytest 9
+  compatibility.
+- **langchain-huggingface** `^0.1.2` → `^1.2.2` — transitively pulls in
+  `langchain-core` 1.4.0 and resolves:
+  - GHSA-qh6h-p6c9-ff54 (high, path traversal in legacy `load_prompt`)
+  - GHSA-2g6r-c272-w58r (low, SSRF via `image_url` token counting)
+- **torch** floor raised to `>=2.8.0` — GHSA-887c-mr87-cxwp (medium,
+  improper resource release). Locked at 2.12.0.
+
+### Dependencies
+
+- **transformers** added as a direct dependency (`^5.0.0`). Previously
+  pulled in transitively by `langchain-huggingface 0.1.2`; on 1.2.2 it
+  only ships under the `[full]` extra, and `app/llm.py` imports
+  `AutoTokenizer` directly.
+- Python constraint tightened from `^3.11` to `>=3.11,<3.15` to satisfy
+  `triton`'s Python cap (transitive of the new torch). CI still covers
+  3.11 and 3.12.
+
+---
+
 ## v2.1.0 — Maintenance & developer experience
 
 No runtime behavior changes. This release overhauls the project's build,
